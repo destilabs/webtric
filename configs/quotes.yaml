@@ -1,0 +1,14 @@
+url: https://quotes.toscrape.com/page/$p$/
+container_class: col-md-8
+items_class: quote
+data_selectors:
+  - text
+  - author
+  - keywords
+data_column_titles:
+  - Text
+  - Author
+  - Keywords
+pagination:
+ crawl_pages: 5
+ delay: 5000

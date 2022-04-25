@@ -1,0 +1,33 @@
+version: '2.1'
+
+services:
+  hub:
+    image: selenium/hub
+    container_name: hub
+    restart: always
+    ports:
+      - "4444:4444"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:4444/grid/api/proxy"] 
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  chrome:
+    image: selenium/node-chrome
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+      HUB_PORT_4444_TCP_PORT: 4444
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:5555"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    
+  webtric:
+    container_name: webtric
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile
+    restart: on-failure
+    #command: ["./wait-for-it.sh", "hub:4444", "--", "./scripts/quotes.sh"] 
