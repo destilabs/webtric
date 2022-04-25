@@ -8,5 +8,3 @@ RUN pip install -r requirements.txt
 ENV PYTHONBUFFERED 1
 
 COPY . .
-
-RUN ./scripts/quotes.sh
