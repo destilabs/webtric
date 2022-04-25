@@ -2,32 +2,32 @@ version: '2.1'
 
 services:
   hub:
-    image: selenium/hub
+    image: selenium/hub:latest
     container_name: hub
-    restart: always
+    restart: on-failure
     ports:
       - "4444:4444"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:4444/grid/api/proxy"] 
-      interval: 5s
-      timeout: 5s
-      retries: 3
 
   chrome:
-    image: selenium/node-chrome
-    environment:
-      HUB_PORT_4444_TCP_ADDR: hub
-      HUB_PORT_4444_TCP_PORT: 4444
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:5555"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    
-  webtric:
-    container_name: webtric
-    build:
-      context: .
-      dockerfile: ./build/Dockerfile
+    image: selenium/node-chrome:latest
     restart: on-failure
-    #command: ["./wait-for-it.sh", "hub:4444", "--", "./scripts/quotes.sh"] 
+    environment:
+      HUB_PORT_4444_TCP_ADDR: localhost
+      HUB_PORT_4444_TCP_PORT: 4444
+    
+  # webtric:
+  #   container_name: webtric
+  #   build:
+  #     context: .
+  #   restart: on-failure
+  #   volumes:
+  #     - .:/app
+  #   command: ["./wait-for-it.sh", "http://localhost:4444/", "--", "./scripts/quotes.sh"]
+
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    environment:
+      - JUPYTER_TOKEN=webtric
+    container_name: jupyter
+    ports:
+      - 8888:8888

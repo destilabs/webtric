@@ -23,6 +23,6 @@ def get_safe_setup():
     options.add_argument("--disable-popup-blocking")
     options.add_argument("--disable-notifications")
 
-    driver = webdriver.Remote("http://hub:4444/wd/hub", desired_capabilities = options.to_capabilities())
+    driver = webdriver.Remote("http://localhost:4444/wd/hub", desired_capabilities = options.to_capabilities())
 
     return driver
