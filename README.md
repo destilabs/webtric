@@ -13,18 +13,37 @@ Pulse-Selenium requires Python3.7+ and [Selenium Chrome Driver](https://chromedr
 Create virtual environment and install requirements.txt
 
 ```sh
-python3.7 -m pip install virtualenv
-python3.7 -m virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
+./scripts/quotes.sh ./outputs/quotes local
+```
+or
+
+```sh
+./scripts/quotes.sh ./outputs/quotes remote
 ```
 
 ## Docker
 
 It can also be used through Docker
+```sh
+export APP=./scripts/quotes.sh
+docker-compose up
+```
 
+## Jupyter
+Run http://localhost:8888/lab?token=webtric to access internal filesystem and read scraped files 
 
+Here is a good example on how to do it:
+```python
+import pandas as pd
+from os import listdir
+from os.path import isfile, join
 
-## Use cases
+VOLUME = "/home/webtric"
+files = [f for f in listdir(VOLUME) if isfile(join(VOLUME, f))]
 
+print('List of all parsed files')
+print('\n'.join(files))
 
+df = pd.read_csv(join(VOLUME, files[-1]))
+df.head()
+```
