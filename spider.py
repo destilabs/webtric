@@ -59,7 +59,10 @@ def scrape(args):
     pagination_config = config['pagination']
     url = config['url']
 
-    driver = get_safe_setup()
+    if args.mode == 'local':
+        driver = get_local_safe_setup()
+    else:
+        driver = get_safe_setup()
 
     spider = Spider(driver, config)
 
@@ -80,8 +83,9 @@ def scrape(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', help='Configuration of spider learning')
-    parser.add_argument('-o', '--output', help='Output file path')
+    parser.add_argument('-c', '--config', help='Configuration of spider learning', required=True)
+    parser.add_argument('-o', '--output', help='Output file path', required=True)
+    parser.add_argument('-m', '--mode', default='true', help='Which driver to use', choices=['local', 'remote'], required=True)
     args = parser.parse_args()
 
     scrape(args)

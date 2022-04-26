@@ -1,4 +1,4 @@
-version: '2.1'
+version: "3"
 
 services:
   chrome:
@@ -23,16 +23,25 @@ services:
       - "4444:4444"
     
   webtric:
+    network_mode: host
     container_name: webtric
     build:
       context: .
     restart: on-failure
-    command: ["./wait-for-it.sh", "localhost:4444", "--", "./scripts/quotes.sh"]
+    command: ["./wait-for-it.sh", "localhost:4444", "--", "./scripts/quotes.sh", "/home/webtric"]
+    volumes:
+      - webtric:/home/webtric/
 
   jupyter:
     image: jupyter/datascience-notebook:latest
     environment:
       - JUPYTER_TOKEN=webtric
     container_name: jupyter
+    volumes:
+      - webtric:/home/webtric/
     ports:
       - 8888:8888
+
+volumes:
+  webtric:
+    external: false
