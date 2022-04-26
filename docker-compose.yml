@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+  # Chromedriver service
   chrome:
     image: selenium/node-chrome:4.1.3-20220405
     shm_size: 2gb
@@ -13,6 +14,8 @@ services:
     ports:
       - "6900:5900"
 
+  # Selenium hub service
+  # Make sure you're exposing ports like below
   hub:
     image: selenium/hub:latest
     container_name: hub
@@ -22,16 +25,20 @@ services:
       - "4443:4443"
       - "4444:4444"
     
+  # Scraper service
+  # Uses wait-for-it script to make sure that hub is up and running before it starts scraping
   webtric:
     network_mode: host
     container_name: webtric
     build:
       context: .
     restart: on-failure
-    command: ["./wait-for-it.sh", "localhost:4444", "--", "./scripts/quotes.sh", "/home/webtric"]
+    command: ["./wait-for-it.sh", "localhost:4444", "--", "${APP}", "/home/webtric"]
     volumes:
       - webtric:/home/webtric/
 
+  # Jupyter service
+  # Would be used to render resulting CSV
   jupyter:
     image: jupyter/datascience-notebook:latest
     environment:
@@ -42,6 +49,7 @@ services:
     ports:
       - 8888:8888
 
+# Volume to share data between containers
 volumes:
   webtric:
     external: false
