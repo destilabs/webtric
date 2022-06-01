@@ -1,6 +1,12 @@
 # webtric
 ## _One python script to scrape many typical websites_
 
+- [Features](#features) 
+- [Installation](#installation)
+- [Docker](#docker)
+- [Jupyter](#jupyter)
+- [Education](#education)
+
 ## Features
 
 - Parsing of sites with table-like or tile-like structures
@@ -47,3 +53,10 @@ print('\n'.join(files))
 df = pd.read_csv(join(VOLUME, files[-1]))
 df.head()
 ```
+
+## Education
+
+In case you want to learn more about scraping, I'm making a "no-bullshit" Udemy course about it:<br/>
+https://www.udemy.com/course/practical-web-scraping-course/<br/>
+Reach me out at Github to get a discount
+
