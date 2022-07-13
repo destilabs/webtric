@@ -1,4 +1,10 @@
 # webtric
+
+## Education
+
+In case you want to learn more about scraping, I'm making a "no-bullshit" Udemy course about it:<br/>
+https://www.udemy.com/course/practical-web-scraping-course/<br/>
+
 ## _One python script to scrape many typical websites_
 
 - [Features](#features) 
@@ -53,10 +59,4 @@ print('\n'.join(files))
 df = pd.read_csv(join(VOLUME, files[-1]))
 df.head()
 ```
-
-## Education
-
-In case you want to learn more about scraping, I'm making a "no-bullshit" Udemy course about it:<br/>
-https://www.udemy.com/course/practical-web-scraping-course/<br/>
-Reach me out at Github to get a discount
 
