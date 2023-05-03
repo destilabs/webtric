@@ -1,0 +1,16 @@
+url: https://www.reddit.com/r/MachineLearning/
+container_class: _1poyrkZ7g36PawDueRza-J
+items_class: _1poyrkZ7g36PawDueRza-J
+data_selectors:
+  - _eYtD2XCVieq6emjKBH3m
+  - _2mHuuvyV9doV3zwbZPtIPG
+  - _1E9mcoVn4MYnuBQSVDt1gC
+  - FHCV02u6Cp2zYL0fhQPsO
+data_column_titles:
+  - Title
+  - Author
+  - Score
+  - Comments
+pagination:
+  crawl_pages: 2
+  delay: 3000

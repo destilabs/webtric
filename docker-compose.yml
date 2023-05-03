@@ -33,7 +33,7 @@ services:
     build:
       context: .
     restart: on-failure
-    command: ["./wait-for-it.sh", "localhost:4444", "--", "${APP}", "/home/webtric"]
+    command: ["./wait-for-it.sh", "localhost:4444", "--", "${APP}", "/home/webtric", "remote"]
     volumes:
       - webtric:/home/webtric/
 

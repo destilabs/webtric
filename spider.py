@@ -33,8 +33,18 @@ class Spider:
         container_element = WebDriverWait(self.__driver, 5).until(
             EC.presence_of_element_located((By.CLASS_NAME, self.__config['container_class']))
         )
-            
-        items = self.__driver.find_elements_by_class_name(self.__config['items_class'])
+
+        try:    
+            items = self.__driver.find_elements(By.CLASS_NAME, self.__config['items_class'])
+        except:
+            with open('page_source.html', 'w') as f:
+                f.write(self.__driver.page_source)
+        
+            raise Exception('Items not found')
+        
+        if len(items) == 0:
+            raise Exception('Items not found')
+
         items_content = [
             [get_text_by_selector(div, selector) for selector in self.__config['data_selectors']]
             for div in items]
