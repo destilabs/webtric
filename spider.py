@@ -1,18 +1,18 @@
+import argparse
 import os
 import time
 
+import pandas as pd
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
 
-import pandas as pd
-import argparse
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
 from tools.helpers import get_text_by_selector
-from tools.setups import get_safe_setup, get_local_safe_setup
 from tools.loaders import load_config
+from tools.setups import get_local_safe_setup, get_safe_setup
+
 
 class Spider:
     def __init__(self, driver, config):
@@ -30,25 +30,34 @@ class Spider:
         """
         self.__driver.get(url)
   
-        container_element = WebDriverWait(self.__driver, 5).until(
+        WebDriverWait(self.__driver, 5).until(
             EC.presence_of_element_located((By.CLASS_NAME, self.__config['container_class']))
         )
 
         try:    
             items = self.__driver.find_elements(By.CLASS_NAME, self.__config['items_class'])
-        except:
+        except NoSuchElementException:
             with open('page_source.html', 'w') as f:
                 f.write(self.__driver.page_source)
         
-            raise Exception('Items not found')
+            candidates = self.__find_textual_elements(self.__driver)
+            print(f'No items found, but following candidates were found: {candidates}. Try to use one of them as items_class in config.json')
         
         if len(items) == 0:
-            raise Exception('Items not found')
+            candidates = self.__find_textual_elements(self.__driver)
+            print(f'No items found, but following candidates were found: {candidates}. Try to use one of them as items_class in config.json')
 
         items_content = [
             [get_text_by_selector(div, selector) for selector in self.__config['data_selectors']]
             for div in items]
-        return pd.DataFrame(items_content, columns = self.__config['data_column_titles']) 
+        
+        df = pd.DataFrame(items_content, columns = self.__config['data_column_titles'])
+
+        if df.shape[0] == 0:
+            candidates = self.__find_textual_elements(items[0])
+            print(f'No items found, but following candidates were found: {candidates}. Try to use one of them as items_class in config.json')
+
+        return df 
 
     def parse_pages(self, url: str):
         """
@@ -62,6 +71,15 @@ class Spider:
             yield self.parse(url.replace("$p$", str(i)))
 
             time.sleep(int(pagination_config['delay']/1000))      
+
+
+    def __find_textual_elements(self, container) -> list:
+        """
+            Finds all elements with text on a page
+            returns:
+                list of selenium elements
+        """
+        return container.find_elements(By.XPATH, "//*[text()]")
 
 def scrape(args): 
     config = load_config(args.config)
