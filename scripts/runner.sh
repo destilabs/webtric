@@ -16,23 +16,35 @@ if [ -z "$2" ]
     echo "Configure what driver should be used [local, remote] as the second argument.";
 fi
 
+# Validation of third argument - config
+if [ -z "$3" ]
+  then
+    echo "Configure what config should be used as the third argument.";
+fi
+
 OUTPUT_PATH=$1;
 
 # Checks whether you have virtualenv installed and venv created
 # If not, it will install virtualenv and create a new one
 # Then it would activate the virtualenv
-FILE=venv/bin/activate
-if test -f "$FILE"; 
+venv_name="venv"
+
+if [ -d "${venv_name}" ]
 then
-    source venv/bin/activate
+    echo "Virtualenv exists"
+    source "${venv_name}/bin/activate"
 else
-    python -m pip install virtualenv
-    python -m virtualenv venv
+    echo "Virtualenv does not exist"
+    echo "Creating virtualenv"
+    python3.10 -m pip install virtualenv --quiet 
+    python3.10 -m virtualenv -q "${venv_name}"
+    source "${venv_name}/bin/activate"
     pip install -r requirements.txt
-    source venv/bin/activate
+    echo "Virtualenv created"
 fi
 
 # Removes the old output folder
 rm -f "${OUTPUT_PATH}/$(date +%Y-%m-%d).json"
 # Executes the scraper
-python -m spider -c "./configs/quotes.yaml" -o "${OUTPUT_PATH}/$(date +%Y-%m-%d).csv" -m $2
+python3 -m spider -c $3 -o "${OUTPUT_PATH}/$(date +%Y-%m-%d).csv" -m $2
+
